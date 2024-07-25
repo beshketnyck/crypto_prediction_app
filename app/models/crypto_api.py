@@ -28,8 +28,11 @@ class CryptoAPI:
         if response.status_code == 200:
             data = response.json()
             prices = data['prices']
-            df = pd.DataFrame(prices, columns=['timestamp', 'price'])
-            df.columns = ['timestamp', 'current_price']  # Зміна назви стовпця
+            volumes = data['total_volumes']
+            df_prices = pd.DataFrame(prices, columns=['timestamp', 'price'])
+            df_volumes = pd.DataFrame(volumes, columns=['timestamp', 'volume'])
+            df = pd.merge(df_prices, df_volumes, on='timestamp')
+            df.columns = ['timestamp', 'current_price', 'volume']  # Зміна назви стовпців
             df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
             df = df.set_index('timestamp').resample('D').first().reset_index()  # Вибираємо перший запис за кожен день
             return df
