@@ -1,13 +1,11 @@
 import requests
-import pandas as pd
-import datetime
+import json
 
 class CryptoAPI:
-    def __init__(self, crypto_id='bitcoin'):
-        self.crypto_id = crypto_id
+    def __init__(self, api_key):
+        self.api_key = api_key
         self.base_url = "https://api.coingecko.com/api/v3/simple/price"
-        self.history_url = "https://api.coingecko.com/api/v3/coins/{}/history?date={}&localization=false"
-        self.trending_url = "https://api.coingecko.com/api/v3/search/trending"
+        self.historical_url = "https://api.coingecko.com/api/v3/coins/{id}/history"
 
     def get_price(self, currency):
         response = requests.get(f"{self.base_url}?ids={currency}&vs_currencies=usd")
@@ -17,16 +15,16 @@ class CryptoAPI:
             print(f"Error: {response.status_code}")
             return None
 
-    def get_historical_data(self, currency, date):
-        response = requests.get(self.history_url.format(currency, date))
+    def get_historical_data(self, currency_id, date):
+        response = requests.get(self.historical_url.format(id=currency_id), params={"date": date})
         if response.status_code == 200:
             return response.json()
         else:
             print(f"Error: {response.status_code}")
             return None
 
-    def get_trending_cryptocurrencies(self):
-        response = requests.get(self.trending_url)
+    def get_market_data(self, currency):
+        response = requests.get(f"https://api.coingecko.com/api/v3/coins/{currency}/market_chart", params={"vs_currency": "usd", "days": "1"})
         if response.status_code == 200:
             return response.json()
         else:
