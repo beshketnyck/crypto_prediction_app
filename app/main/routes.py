@@ -11,12 +11,10 @@ def index():
 
 @main.route('/fetch_data', methods=['POST'])
 def fetch_data():
-    days = int(request.form.get('days', 30))  # Отримуємо кількість днів від користувача
-    crypto_api = CryptoAPI(api_key="YOUR_API_KEY")  # Вставте свій API ключ
+    days = int(request.form.get('days', 30))
+    crypto_api = CryptoAPI(api_key="CG-qfTXGpXEPTzGvUWAHPCGEpa8")
     data = crypto_api.get_market_data('bitcoin', days)
     if data is not None and not data.empty:
-        print("Data fetched:")  # Додано для діагностики
-        print(data.head())  # Додано для діагностики
         data.to_csv('data/bitcoin_price_data.csv', index=False)
         return "Data fetched and saved successfully."
     else:
@@ -28,13 +26,40 @@ def analyse_data():
     if os.path.exists(file_path):
         analyser = DataAnalyser(file_path)
         data = analyser.load_data()
-        period = int(request.form.get('period', 7))  # Отримуємо період від користувача
-        print(data.columns)  # Додайте цей рядок для виводу стовпців
+        period = int(request.form.get('period', 7))
         if 'current_price' in data.columns:
             analyser.calculate_moving_average(period=period)
             analyser.plot_data()
             return "Data analysis completed and plotted."
         else:
             return f"Error: 'current_price' column not found. Available columns: {list(data.columns)}"
+    else:
+        return "Data file not found."
+
+@main.route('/train_model', methods=['POST'])
+def train_model():
+    file_path = 'data/bitcoin_price_data.csv'
+    if os.path.exists(file_path):
+        analyser = DataAnalyser(file_path)
+        analyser.load_data()
+        analyser.train_model()
+        return "Model trained successfully."
+    else:
+        return "Data file not found."
+
+@main.route('/predict', methods=['POST'])
+def predict():
+    file_path = 'data/bitcoin_price_data.csv'
+    if os.path.exists(file_path):
+        analyser = DataAnalyser(file_path)
+        analyser.load_data()
+        day_of_year = int(request.form.get('day_of_year'))
+        year = int(request.form.get('year'))
+        X = pd.DataFrame({'day_of_year': [day_of_year], 'year': [year]})
+        prediction = analyser.predict(X)
+        if prediction is not None:
+            return f"Predicted price: ${prediction[0]:.2f}"
+        else:
+            return "Model is not trained yet."
     else:
         return "Data file not found."
