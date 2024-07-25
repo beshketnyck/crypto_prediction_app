@@ -46,7 +46,8 @@ class DataAnalyser:
         self.data['timestamp'] = pd.to_datetime(self.data['timestamp'])
         self.data['day_of_year'] = self.data['timestamp'].dt.dayofyear
         self.data['year'] = self.data['timestamp'].dt.year
-        features = ['day_of_year', 'year']  # Видалили 'volume'
+        self.data['volume'] = self.data['volume'].fillna(self.data['volume'].mean())  # Заповнення пропущених значень
+        features = ['day_of_year', 'year', 'volume']
         X = self.data[features]
         y = self.data['current_price']
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

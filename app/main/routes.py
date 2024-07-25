@@ -55,8 +55,8 @@ def predict():
         analyser.load_data()
         day_of_year = int(request.form.get('day_of_year'))
         year = int(request.form.get('year'))
-        # Видаляємо об'єм торгів
-        X = pd.DataFrame({'day_of_year': [day_of_year], 'year': [year]})
+        volume = analyser.data['volume'].mean()  # Використання середнього значення об'єму торгів
+        X = pd.DataFrame({'day_of_year': [day_of_year], 'year': [year], 'volume': [volume]})
         prediction = analyser.predict(X)
         if prediction is not None:
             return f"Predicted price: ${prediction[0]:.2f}"
