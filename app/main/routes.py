@@ -28,9 +28,10 @@ def analyse_data():
     if os.path.exists(file_path):
         analyser = DataAnalyser(file_path)
         data = analyser.load_data()
+        period = int(request.form.get('period', 7))  # Отримуємо період від користувача
         print(data.columns)  # Додайте цей рядок для виводу стовпців
         if 'current_price' in data.columns:
-            analyser.calculate_moving_average(period=7)
+            analyser.calculate_moving_average(period=period)
             analyser.plot_data()
             return "Data analysis completed and plotted."
         else:
