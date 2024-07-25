@@ -26,7 +26,12 @@ class CryptoAPI:
     def get_market_data(self, currency):
         response = requests.get(f"https://api.coingecko.com/api/v3/coins/{currency}/market_chart", params={"vs_currency": "usd", "days": "1"})
         if response.status_code == 200:
-            return response.json()
+            data = response.json()
+            prices = data['prices']
+            df = pd.DataFrame(prices, columns=['timestamp', 'price'])
+            df.columns = ['timestamp', 'current_price']  # Зміна назви стовпця
+            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+            return df
         else:
             print(f"Error: {response.status_code}")
             return None

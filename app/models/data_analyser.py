@@ -15,8 +15,8 @@ class DataAnalyser:
 
     def plot_data(self):
         plt.figure(figsize=(10, 6))
-        plt.plot(self.data['date'], self.data['current_price'], label='Current Price')
-        plt.plot(self.data['date'], self.data['moving_average'], label='Moving Average')
+        plt.plot(self.data['timestamp'], self.data['current_price'], label='Current Price')
+        plt.plot(self.data['timestamp'], self.data['moving_average'], label='Moving Average')
         plt.xlabel('Date')
         plt.ylabel('Price in USD')
         plt.title('Bitcoin Price and Moving Average')
