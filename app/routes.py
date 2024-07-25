@@ -13,7 +13,7 @@ def index():
 @app.route('/fetch_data', methods=['POST'])
 def fetch_data():
     days = request.form.get('days', 30)
-    crypto_api = CryptoAPI(api_key="YOUR_API_KEY")  # Вставте свій API ключ
+    crypto_api = CryptoAPI(api_key="CG-qfTXGpXEPTzGvUWAHPCGEpa8")  # Вставте свій API ключ
     data = crypto_api.get_market_data('bitcoin')
     if data:
         df = pd.DataFrame(data['prices'], columns=['timestamp', 'price'])
