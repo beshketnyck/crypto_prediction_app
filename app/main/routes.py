@@ -12,13 +12,16 @@ def index():
 @main.route('/fetch_data', methods=['POST'])
 def fetch_data():
     days = request.form.get('days', 30)
-    crypto_api = CryptoAPI(api_key="CG-qfTXGpXEPTzGvUWAHPCGEpa8")  # Вставте свій API ключ
+    crypto_api = CryptoAPI(api_key="YOUR_API_KEY")  # Вставте свій API ключ
     data = crypto_api.get_market_data('bitcoin')
-    if data:
-        df = pd.DataFrame(data['prices'], columns=['timestamp', 'price'])
-        df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
-        df.to_csv('data/bitcoin_price_data.csv', index=False)
-        return "Data fetched and saved successfully."
+    if data is not None:
+        print("Data fetched:")  # Додано для діагностики
+        print(data.head())  # Додано для діагностики
+        if not data.empty:
+            data.to_csv('data/bitcoin_price_data.csv', index=False)
+            return "Data fetched and saved successfully."
+        else:
+            return "Fetched data is empty."
     else:
         return "Error fetching data."
 
@@ -28,8 +31,12 @@ def analyse_data():
     if os.path.exists(file_path):
         analyser = DataAnalyser(file_path)
         data = analyser.load_data()
-        analyser.calculate_moving_average(period=7)
-        analyser.plot_data()
-        return "Data analysis completed and plotted."
+        print(data.columns)  # Додайте цей рядок для виводу стовпців
+        if 'current_price' in data.columns:
+            analyser.calculate_moving_average(period=7)
+            analyser.plot_data()
+            return "Data analysis completed and plotted."
+        else:
+            return f"Error: 'current_price' column not found. Available columns: {list(data.columns)}"
     else:
         return "Data file not found."

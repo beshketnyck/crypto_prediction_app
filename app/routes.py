@@ -16,8 +16,13 @@ def fetch_data():
     crypto_api = CryptoAPI(api_key="YOUR_API_KEY")  # Вставте свій API ключ
     data = crypto_api.get_market_data('bitcoin')
     if data is not None:
-        data.to_csv('data/bitcoin_price_data.csv', index=False)
-        return "Data fetched and saved successfully."
+        print("Data fetched:")  # Додано для діагностики
+        print(data.head())  # Додано для діагностики
+        if not data.empty:
+            data.to_csv('data/bitcoin_price_data.csv', index=False)
+            return "Data fetched and saved successfully."
+        else:
+            return "Fetched data is empty."
     else:
         return "Error fetching data."
 
