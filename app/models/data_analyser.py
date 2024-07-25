@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 import pickle
 
@@ -46,7 +46,7 @@ class DataAnalyser:
         self.data['timestamp'] = pd.to_datetime(self.data['timestamp'])
         self.data['day_of_year'] = self.data['timestamp'].dt.dayofyear
         self.data['year'] = self.data['timestamp'].dt.year
-        features = ['day_of_year', 'year']
+        features = ['day_of_year', 'year']  # Видалили 'volume'
         X = self.data[features]
         y = self.data['current_price']
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -54,7 +54,7 @@ class DataAnalyser:
 
     def train_model(self):
         X_train, X_test, y_train, y_test = self.prepare_data_for_model()
-        self.model = LinearRegression()
+        self.model = RandomForestRegressor(n_estimators=100, random_state=42)
         self.model.fit(X_train, y_train)
         predictions = self.model.predict(X_test)
         mse = mean_squared_error(y_test, predictions)

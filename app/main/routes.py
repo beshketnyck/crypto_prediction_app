@@ -55,6 +55,7 @@ def predict():
         analyser.load_data()
         day_of_year = int(request.form.get('day_of_year'))
         year = int(request.form.get('year'))
+        # Видаляємо об'єм торгів
         X = pd.DataFrame({'day_of_year': [day_of_year], 'year': [year]})
         prediction = analyser.predict(X)
         if prediction is not None:
