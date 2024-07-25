@@ -12,7 +12,7 @@ def index():
 @main.route('/fetch_data', methods=['POST'])
 def fetch_data():
     days = int(request.form.get('days', 30))
-    crypto_api = CryptoAPI(api_key="CG-qfTXGpXEPTzGvUWAHPCGEpa8")
+    crypto_api = CryptoAPI(api_key="YOUR_API_KEY")
     data = crypto_api.get_market_data('bitcoin', days)
     if data is not None and not data.empty:
         data.to_csv('data/bitcoin_price_data.csv', index=False)
