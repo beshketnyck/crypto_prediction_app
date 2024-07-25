@@ -12,17 +12,12 @@ def index():
 
 @app.route('/fetch_data', methods=['POST'])
 def fetch_data():
-    days = request.form.get('days', 30)
-    crypto_api = CryptoAPI(api_key="YOUR_API_KEY")  # Вставте свій API ключ
-    data = crypto_api.get_market_data('bitcoin')
-    if data is not None:
-        print("Data fetched:")  # Додано для діагностики
-        print(data.head())  # Додано для діагностики
-        if not data.empty:
-            data.to_csv('data/bitcoin_price_data.csv', index=False)
-            return "Data fetched and saved successfully."
-        else:
-            return "Fetched data is empty."
+    days = int(request.form.get('days', 30))  # Отримуємо кількість днів від користувача
+    crypto_api = CryptoAPI(api_key="CG-qfTXGpXEPTzGvUWAHPCGEpa8")  # Вставте свій API ключ
+    data = crypto_api.get_market_data('bitcoin', days)
+    if data is not None and not data.empty:
+        data.to_csv('data/bitcoin_price_data.csv', index=False)
+        return "Data fetched and saved successfully."
     else:
         return "Error fetching data."
 
