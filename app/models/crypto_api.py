@@ -1,5 +1,5 @@
 import requests
-import json
+import pandas as pd
 
 class CryptoAPI:
     def __init__(self, api_key):

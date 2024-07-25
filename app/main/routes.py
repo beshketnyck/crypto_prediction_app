@@ -1,16 +1,15 @@
 from flask import render_template, request
-from .models.crypto_api import CryptoAPI
-from .models.data_analyser import DataAnalyser
+from . import main
+from ..models.crypto_api import CryptoAPI
+from ..models.data_analyser import DataAnalyser
 import pandas as pd
 import os
 
-from . import app
-
-@app.route('/')
+@main.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/fetch_data', methods=['POST'])
+@main.route('/fetch_data', methods=['POST'])
 def fetch_data():
     days = request.form.get('days', 30)
     crypto_api = CryptoAPI(api_key="YOUR_API_KEY")  # Вставте свій API ключ
@@ -23,7 +22,7 @@ def fetch_data():
     else:
         return "Error fetching data."
 
-@app.route('/analyse_data', methods=['POST'])
+@main.route('/analyse_data', methods=['POST'])
 def analyse_data():
     file_path = 'data/bitcoin_price_data.csv'
     if os.path.exists(file_path):
