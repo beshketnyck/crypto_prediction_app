@@ -58,13 +58,12 @@ class DataAnalyser:
         return daily_data
 
     def save_to_csv(self, df, filename):
-        # Збереження даних у CSV
         dir_path = './app/main/data'
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
-        
+
         filepath = os.path.join(dir_path, filename)
-        df.to_csv(filepath)
+        df.to_csv(filepath, index=True)  # Додаємо параметр index=True
         return filepath
 
     def fetch_twitter_followers(self, coin_id):
