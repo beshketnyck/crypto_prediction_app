@@ -50,22 +50,8 @@
                 </tr>
                 {% endfor %}
             </table>
-            <h2>Social Data:</h2>
-            <ul>
-                <li>Twitter Followers: {{ social_data.twitter_followers }}</li>
-                <li>Reddit Subscribers: {{ social_data.reddit_subscribers }}</li>
-                <li>Facebook Likes: {{ social_data.facebook_likes }}</li>
-            </ul>
-            <h2>News:</h2>
-            <ul>
-                {% if news %}
-                    {% for item in news %}
-                    <li><strong>{{ item.title }}</strong> ({{ item.timestamp }}): {{ item.description }}</li>
-                    {% endfor %}
-                {% else %}
-                    <li>No news available</li>
-                {% endif %}
-            </ul>
+            <h2>Twitter Followers:</h2>
+            <p>{{ twitter_followers }}</p>
         {% endif %}
     </main>
     <footer>
