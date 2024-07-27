@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Crypto Prediction App</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Crypto Prediction App</h1>
+    </header>
+    <main>
+        <form name="dataForm" method="POST">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.start_date.label }}<br>
+                {{ form.start_date(size=10) }}
+            </p>
+            <p>
+                {{ form.end_date.label }}<br>
+                {{ form.end_date(size=10) }}
+            </p>
+            <p>
+                {{ form.coin.label }}<br>
+                {{ form.coin() }}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+        <h2>Data:</h2>
+        {% if data is not none and data|length > 0 %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Price</th>
+                        <th>Market Cap</th>
+                        <th>Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.iterrows() %}
+                    <tr>
+                        <td>{{ row[1].name.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ row[1]['price'] }}</td>
+                        <td>{{ row[1]['market_cap'] }}</td>
+                        <td>{{ row[1]['volume'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No data available</p>
+        {% endif %}
+        {% if twitter_followers %}
+            <h2>Twitter Followers:</h2>
+            <p>{{ twitter_followers }}</p>
+        {% endif %}
+    </main>
+    <footer>
+        <p>&copy; 2024 Crypto Prediction App</p>
+    </footer>
+    <script>
+        function validateForm() {
+            let start_date = document.forms["dataForm"]["start_date"].value;
+            let end_date = document.forms["dataForm"]["end_date"].value;
+            let coin = document.forms["dataForm"]["coin"].value;
+            if (start_date === "" || end_date === "" || coin === "") {
+                alert("All fields must be filled out");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
