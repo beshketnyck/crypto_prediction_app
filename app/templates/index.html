@@ -1,21 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Prediction App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script>
-        function validateForm() {
-            let start_date = document.forms["dataForm"]["start_date"].value;
-            let end_date = document.forms["dataForm"]["end_date"].value;
-            let coin = document.forms["dataForm"]["coin"].value;
-            if (start_date == "" || end_date == "" || coin == "") {
-                alert("All fields must be filled out");
-                return false;
-            }
-        }
-    </script>
 </head>
 <body>
     <header>
@@ -36,33 +25,63 @@
                 {{ form.coin.label }}<br>
                 {{ form.coin() }}
             </p>
-            <p>{{ form.submit() }}</p>
+            <p>
+                {{ form.submit() }}
+            </p>
         </form>
         {% if error %}
             <p style="color: red;">Error: {{ error }}</p>
         {% endif %}
         {% if data is not none %}
-        <h2>Data:</h2>
-        <table>
-            <tr>
-                <th>Date</th>
-                <th>Price</th>
-                <th>Market Cap</th>
-                <th>Volume</th>
-            </tr>
-            {% for row in data.itertuples() %}
-            <tr>
-                <td>{{ row.Index.strftime('%Y-%m-%d') }}</td>
-                <td>{{ row.price }}</td>
-                <td>{{ row.market_cap if row.market_cap else 'N/A' }}</td>
-                <td>{{ row.volume if row.volume else 'N/A' }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+            <h2>Data:</h2>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Price</th>
+                    <th>Market Cap</th>
+                    <th>Volume</th>
+                </tr>
+                {% for row in data.itertuples() %}
+                <tr>
+                    <td>{{ row.Index.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ row.price }}</td>
+                    <td>{{ row.market_cap if row.market_cap else 'N/A' }}</td>
+                    <td>{{ row.volume if row.volume else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <h2>Social Data:</h2>
+            <ul>
+                <li>Twitter Followers: {{ social_data.twitter_followers }}</li>
+                <li>Reddit Subscribers: {{ social_data.reddit_subscribers }}</li>
+                <li>Facebook Likes: {{ social_data.facebook_likes }}</li>
+            </ul>
+            <h2>News:</h2>
+            <ul>
+                {% if news %}
+                    {% for item in news %}
+                    <li><strong>{{ item.title }}</strong> ({{ item.timestamp }}): {{ item.description }}</li>
+                    {% endfor %}
+                {% else %}
+                    <li>No news available</li>
+                {% endif %}
+            </ul>
         {% endif %}
     </main>
     <footer>
         <p>&copy; 2024 Crypto Prediction App</p>
     </footer>
+    <script>
+        function validateForm() {
+            let start_date = document.forms["dataForm"]["start_date"].value;
+            let end_date = document.forms["dataForm"]["end_date"].value;
+            let coin = document.forms["dataForm"]["coin"].value;
+            if (start_date === "" || end_date === "" || coin === "") {
+                alert("All fields must be filled out");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </body>
 </html>

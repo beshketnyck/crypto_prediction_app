@@ -8,9 +8,7 @@ class DataAnalyser:
         self.base_api_url = base_api_url
 
     def fetch_data(self, start_date, end_date, coin_id):
-        # Перетворення дат на datetime і зміщення часу на один день назад для включення початкової дати
         start_datetime = datetime.combine(start_date, datetime.min.time()) + timedelta(days=1)
-        # Зміщення часу на один день вперед для включення кінцевої дати
         end_datetime = datetime.combine(end_date, datetime.min.time()) + timedelta(days=1)
         
         params = {
@@ -44,10 +42,34 @@ class DataAnalyser:
         else:
             df['volume'] = None
 
-        # Вибір даних лише за один запис на день
         df = df.resample('D').first()
         
         return df
+
+    def fetch_social_data(self, coin_id):
+        url = f'{self.base_api_url}/coins/{coin_id}'
+        response = requests.get(url)
+        data = response.json()
+
+        social_data = {
+            'twitter_followers': data.get('community_data', {}).get('twitter_followers', None),
+            'reddit_subscribers': data.get('community_data', {}).get('reddit_subscribers', None),
+            'facebook_likes': data.get('community_data', {}).get('facebook_likes', None)
+        }
+        
+        return social_data
+
+    def fetch_news(self, coin_id):
+        url = f'{self.base_api_url}/coins/{coin_id}/status_updates'
+        response = requests.get(url)
+        data = response.json()
+
+        if 'status_updates' not in data:
+            return []
+
+        news = [{'timestamp': item['created_at'], 'title': item['title'], 'description': item['description']} for item in data['status_updates']]
+        
+        return news
 
     def save_to_csv(self, df, filename):
         dir_path = './app/main/data'
@@ -59,3 +81,4 @@ class DataAnalyser:
 
     def read_csv(self, filepath):
         return pd.read_csv(filepath, parse_dates=True, index_col='timestamp')
+
