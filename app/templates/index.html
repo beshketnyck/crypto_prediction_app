@@ -27,6 +27,23 @@
             <p>Start Date: {{ start_date }}</p>
             <p>End Date: {{ end_date }}</p>
         {% endif %}
+        {% if data is not none %}
+            <h2>Data:</h2>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                </tr>
+                {% for row in data.itertuples() %}
+                    <tr>
+                        <td>{{ row.Index.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.current_price }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
     </main>
     <footer>
         <p>&copy; 2024 Crypto Prediction App</p>

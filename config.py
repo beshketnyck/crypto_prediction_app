@@ -1,7 +1,8 @@
 import os
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'mama-mia'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+    API_URL = os.environ.get('API_URL') or 'https://api.coingecko.com/api/v3/coins/markets'
     API_KEY = os.environ.get('API_KEY') or 'CG-qfTXGpXEPTzGvUWAHPCGEpa8	'
     # Додайте інші конфігураційні параметри тут
 

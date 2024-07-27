@@ -6,38 +6,32 @@ class DataAnalyser:
         self.api_url = api_url
 
     def fetch_data(self, start_date, end_date):
-        # Запит даних з API
-        response = requests.get(self.api_url, params={'start': start_date, 'end': end_date})
+        # Запит даних з API CoinGecko
+        params = {
+            'vs_currency': 'usd',
+            'order': 'market_cap_desc',
+            'per_page': 100,
+            'page': 1,
+            'sparkline': False,
+            'price_change_percentage': '1h,24h,7d'
+        }
+        response = requests.get(self.api_url, params=params)
         data = response.json()
 
         # Перетворення JSON-даних в DataFrame
         df = pd.DataFrame(data)
-        df['Date'] = pd.to_datetime(df['Date'])
+        df['Date'] = pd.to_datetime(start_date)
+        df = df[['Date', 'name', 'current_price']]
         df.set_index('Date', inplace=True)
 
         return df
 
     def calculate_moving_average(self, data, window_size):
         # Обчислення ковзного середнього
-        moving_average = data['Price'].rolling(window=window_size).mean()
+        moving_average = data['current_price'].rolling(window=window_size).mean()
         return moving_average
 
     def calculate_volatility(self, data, window_size):
         # Обчислення волатильності
-        volatility = data['Price'].rolling(window=window_size).std()
+        volatility = data['current_price'].rolling(window=window_size).std()
         return volatility
-
-# Основна частина, де ми створюємо екземпляр DataAnalyser і виконуємо аналіз даних
-if __name__ == '__main__':
-    api_url = 'https://api.example.com/cryptodata'
-    analyser = DataAnalyser(api_url)
-
-    start_date = '2023-01-01'
-    end_date = '2023-06-30'
-    data = analyser.fetch_data(start_date, end_date)
-
-    moving_average = analyser.calculate_moving_average(data, window_size=30)
-    volatility = analyser.calculate_volatility(data, window_size=30)
-
-    print(f'Moving Average:\n{moving_average}')
-    print(f'Volatility:\n{volatility}')
