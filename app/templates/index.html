@@ -42,19 +42,23 @@
             <p style="color: red;">Error: {{ error }}</p>
         {% endif %}
         {% if data is not none %}
-            <h2>Data:</h2>
-            <table>
-                <tr>
-                    <th>Date</th>
-                    <th>Price</th>
-                </tr>
-                {% for row in data.itertuples() %}
-                    <tr>
-                        <td>{{ row.Index.strftime('%Y-%m-%d') }}</td>
-                        <td>{{ row.price }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
+        <h2>Data:</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Price</th>
+                <th>Market Cap</th>
+                <th>Volume</th>
+            </tr>
+            {% for row in data.itertuples() %}
+            <tr>
+                <td>{{ row.Index.strftime('%Y-%m-%d') }}</td>
+                <td>{{ row.price }}</td>
+                <td>{{ row.market_cap if row.market_cap else 'N/A' }}</td>
+                <td>{{ row.volume if row.volume else 'N/A' }}</td>
+            </tr>
+            {% endfor %}
+        </table>
         {% endif %}
     </main>
     <footer>
