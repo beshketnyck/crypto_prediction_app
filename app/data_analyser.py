@@ -1,37 +1,45 @@
+import os
 import requests
 import pandas as pd
+from datetime import datetime
 
 class DataAnalyser:
-    def __init__(self, api_url):
-        self.api_url = api_url
+    def __init__(self, base_api_url):
+        self.base_api_url = base_api_url
 
-    def fetch_data(self, start_date, end_date):
+    def fetch_data(self, start_date, end_date, coin_id):
+        # Перетворення дат у datetime об'єкти з часом 00:00:00
+        start_datetime = datetime.combine(start_date, datetime.min.time())
+        end_datetime = datetime.combine(end_date, datetime.min.time())
+
         # Запит даних з API CoinGecko
         params = {
             'vs_currency': 'usd',
-            'order': 'market_cap_desc',
-            'per_page': 100,
-            'page': 1,
-            'sparkline': False,
-            'price_change_percentage': '1h,24h,7d'
+            'from': int(start_datetime.timestamp()),
+            'to': int(end_datetime.timestamp())
         }
-        response = requests.get(self.api_url, params=params)
+        url = f'{self.base_api_url}/coins/{coin_id}/market_chart/range'
+        response = requests.get(url, params=params)
         data = response.json()
 
+        # Перевірка, чи є ключ 'prices' у відповіді
+        if 'prices' not in data:
+            raise ValueError("Invalid response from API: 'prices' key not found")
+
         # Перетворення JSON-даних в DataFrame
-        df = pd.DataFrame(data)
-        df['Date'] = pd.to_datetime(start_date)
-        df = df[['Date', 'name', 'current_price']]
-        df.set_index('Date', inplace=True)
+        prices = data['prices']
+        df = pd.DataFrame(prices, columns=['timestamp', 'price'])
+        df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+        df.set_index('timestamp', inplace=True)
 
         return df
 
-    def calculate_moving_average(self, data, window_size):
-        # Обчислення ковзного середнього
-        moving_average = data['current_price'].rolling(window=window_size).mean()
-        return moving_average
-
-    def calculate_volatility(self, data, window_size):
-        # Обчислення волатильності
-        volatility = data['current_price'].rolling(window=window_size).std()
-        return volatility
+    def save_to_csv(self, data, filename):
+        # Перевірка існування директорії data
+        if not os.path.exists('data'):
+            os.makedirs('data')
+        
+        # Збереження даних у CSV-файл
+        filepath = os.path.join('data', filename)
+        data.to_csv(filepath)
+        return filepath

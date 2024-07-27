@@ -5,13 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Prediction App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function validateForm() {
+            let start_date = document.forms["dataForm"]["start_date"].value;
+            let end_date = document.forms["dataForm"]["end_date"].value;
+            let coin = document.forms["dataForm"]["coin"].value;
+            if (start_date == "" || end_date == "" || coin == "") {
+                alert("All fields must be filled out");
+                return false;
+            }
+        }
+    </script>
 </head>
 <body>
     <header>
         <h1>Welcome to Crypto Prediction App</h1>
     </header>
     <main>
-        <form method="POST">
+        <form name="dataForm" method="POST" onsubmit="return validateForm()">
             {{ form.hidden_tag() }}
             <p>
                 {{ form.start_date.label }}<br>
@@ -21,25 +32,26 @@
                 {{ form.end_date.label }}<br>
                 {{ form.end_date(size=32) }}
             </p>
+            <p>
+                {{ form.coin.label }}<br>
+                {{ form.coin() }}
+            </p>
             <p>{{ form.submit() }}</p>
         </form>
-        {% if start_date and end_date %}
-            <p>Start Date: {{ start_date }}</p>
-            <p>End Date: {{ end_date }}</p>
+        {% if error %}
+            <p style="color: red;">Error: {{ error }}</p>
         {% endif %}
         {% if data is not none %}
             <h2>Data:</h2>
             <table>
                 <tr>
                     <th>Date</th>
-                    <th>Name</th>
                     <th>Price</th>
                 </tr>
                 {% for row in data.itertuples() %}
                     <tr>
                         <td>{{ row.Index.strftime('%Y-%m-%d') }}</td>
-                        <td>{{ row.name }}</td>
-                        <td>{{ row.current_price }}</td>
+                        <td>{{ row.price }}</td>
                     </tr>
                 {% endfor %}
             </table>
