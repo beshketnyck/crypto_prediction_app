@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Prediction App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Crypto Prediction App</h1>
+    </header>
+    <main>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.start_date.label }}<br>
+                {{ form.start_date(size=32) }}
+            </p>
+            <p>
+                {{ form.end_date.label }}<br>
+                {{ form.end_date(size=32) }}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+        {% if start_date and end_date %}
+            <p>Start Date: {{ start_date }}</p>
+            <p>End Date: {{ end_date }}</p>
+        {% endif %}
+    </main>
+    <footer>
+        <p>&copy; 2024 Crypto Prediction App</p>
+    </footer>
+</body>
+</html>
