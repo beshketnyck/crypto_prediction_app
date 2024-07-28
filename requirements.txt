@@ -4,3 +4,5 @@ scikit-learn
 numpy
 requests
 Flask-WTF
+aiohttp
+requests_cache
